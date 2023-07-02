@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>NYAN NEKO</title>
+  <style>
+    body {
+      background-color: black;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      margin: 0;
+    }
+
+    .logo {
+      max-width: 25%;
+      height: 50%;
+    }
+
+    #container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+  }
+  
+  .hidden {
+    display: none;
+  }
+
+    .gif-above-button {
+      max-width: 200%;
+      max-height: 100%;
+      margin-bottom: 10px;
+    }
+
+    /* Style the image */
+    #interactive-image {
+      position: fixed;
+      bottom: 10px;
+      left: 10px;
+      width: 100px; /* Adjust the width as needed */
+      height: auto; /* Preserve aspect ratio */
+      cursor: pointer;
+    }
+  </style>
+  <script>
+    // Get references to the image and audio elements
+    var image = document.getElementById('interactive-image');
+    var music = document.getElementById('background-music');
+    var playButton = document.querySelector('.play-button');
+    
+
+    // Add click event listener to the image
+    image.addEventListener('click', function() {
+      // Check if the music is currently playing
+      if (music.paused) {
+        // Start playing the music
+        music.play();
+      } else {
+        // Pause the music
+        music.pause();
+      }
+    });
+
+    // Add click event listener to the play button
+    playButton.addEvent('click', function() {
+      <a class="button" href="C:\Users\diell\OneDrive\Desktop\Nyan-Neko-main\game.html">Go to Another Page</a>
+    });
+  </script>
+</head>
+<body>
+  <img src="https://files.catbox.moe/69whig.gif" alt="Logo" class="logo">
+  <a href="file:///C:/Users/diell/OneDrive/Desktop/Nyan-Neko-main/game.html">
+    <img src="https://img1.picmix.com/output/stamp/normal/7/6/1/7/2047167_25e21.gif" alt="Clickable GIF">
+  </a>
+    <!-- Add the interactive image -->
+    <img id="interactive-image" src="https://i.redd.it/x65awv6nlf9b1.png" alt="Interactive Image">
+    
+
+  
+    <!-- Add the audio element for background music -->
+    <audio id="background-music" src="https://files.catbox.moe/05tsw1.mp3" loop></audio>
+    
+  
+    <script>
+      // Get references to the image and audio elements
+      var image = document.getElementById('interactive-image');
+      var music = document.getElementById('background-music');
+  
+      // Add click event listener to the image
+      image.addEventListener('click', function() {
+        // Check if the music is currently playing
+        if (music.paused) {
+          // Start playing the music
+          music.play();
+        } else {
+          // Pause the music
+          music.pause();
+        }
+      });
+    </script>
+  </body>
+  </html> 

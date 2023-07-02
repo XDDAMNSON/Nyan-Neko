@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <style>
+    body {
+      margin: 0;
+      padding: 0;
+      overflow: hidden;
+      background: black;
+    }
+    
+    .player {
+      position: absolute;
+      top: 0;
+      left: 0;
+    }
+    
+    .treat {
+      position: absolute;
+      width: 50px;
+      height: 50px;
+      background-image: url("https://files.catbox.moe/91s604.png");
+      background-repeat: no-repeat;
+      background-size: cover;
+    }
+    
+    #score {
+      position: fixed;
+      bottom: 10px;
+      right: 10px;
+      color: white;
+      font-size: 30px;
+      font-family: 'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;
+    }
+  </style>
+</head>
+<div id="container">
+  <img id="ready" src="https://files.catbox.moe/lvnm6o.png" alt="Ready" style="display: none;">
+  <img id="steady" src="https://files.catbox.moe/ssntqw.png" alt="Steady" style="display: none;">
+  <img id="go" src="https://files.catbox.moe/c985jt.png" alt="Go" style="display: none;">
+</div>
+<script src="game.js"></script>
+</body>
+</html>
+<body>
+  <div class="player">
+    <img src="https://i.gifer.com/17xo.gif" style="width: 100px; height: 100px;">
+  </div>
+  
+  <div id="score">Score: 0</div>
+  
+  <script>
+    var player = document.querySelector('.player');
+    var scoreElement = document.getElementById('score');
+    var score = 0;
+
+    document.addEventListener('mousemove', function(event) {
+      var mouseX = event.clientX;
+      var mouseY = event.clientY;
+      
+      player.style.left = mouseX - (player.clientWidth / 2) + 'px';
+      player.style.top = mouseY - (player.clientHeight / 2) + 'px';
+    });
+
+    setInterval(function() {
+      var treats = document.querySelectorAll('.treat');
+
+      for (var i = 0; i < treats.length; i++) {
+        var treat = treats[i];
+        var treatRect = treat.getBoundingClientRect();
+        var playerRect = player.getBoundingClientRect();
+
+        if (
+          playerRect.left < treatRect.right &&
+          playerRect.right > treatRect.left &&
+          playerRect.top < treatRect.bottom &&
+          playerRect.bottom > treatRect.top
+        ) {
+          treat.parentNode.removeChild(treat); // Remove the touched treat
+          score += 10;
+          scoreElement.textContent = 'Score: ' + score;
+
+          spawnTreat(); // Spawn a new treat
+        }
+      }
+    }, 100);
+
+    function spawnTreat() {
+      var treat = document.createElement('div');
+      treat.classList.add('treat');
+      treat.style.top = getRandomPosition(window.innerHeight) + 'px';
+      treat.style.left = getRandomPosition(window.innerWidth) + 'px';
+      document.body.appendChild(treat);
+    }
+
+    setInterval(spawnTreat, 5000); // Spawn treats every 5 seconds
+
+    function getRandomPosition(max) {
+      return Math.floor(Math.random() * max);
+    }
+  </script>
+</body>
+</html>
