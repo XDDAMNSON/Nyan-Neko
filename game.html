@@ -1,7 +1,6 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <link rel="icon" type="image/x-icon" href="https://files.catbox.moe/w7e3iw.png">
   <style>
     body {
       margin: 0;
@@ -14,13 +13,14 @@
       position: absolute;
       top: 0;
       left: 0;
+      z-index: 1; /* Ensure the player stays in front */
     }
     
     .treat {
       position: absolute;
       width: 50px;
       height: 50px;
-      background-image: url("https://files.catbox.moe/91s604.png");
+      background-image: url("https://files.catbox.moe/y95jtc.gif");
       background-repeat: no-repeat;
       background-size: cover;
     }
@@ -31,31 +31,54 @@
       right: 10px;
       color: white;
       font-size: 30px;
-      font-family: 'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;
+      font-family: SilkscreenNormal, Monaco, "Courier New", Courier, monospace;
+      z-index: 1; /* Ensure the player stays in front */
+    }
+    
+    .achievement {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      display: none;
     }
   </style>
 </head>
-<div id="container">
-  <img id="ready" src="https://files.catbox.moe/lvnm6o.png" alt="Ready" style="display: none;">
-  <img id="steady" src="https://files.catbox.moe/ssntqw.png" alt="Steady" style="display: none;">
-  <img id="go" src="https://files.catbox.moe/c985jt.png" alt="Go" style="display: none;">
-</div>
-<script src="game.js"></script>
-</body>
-</html>
 <body>
+
+  
+  <div id="container">
+    <img id="ready" src="https://files.catbox.moe/lvnm6o.png" alt="Ready" style="display: none;">
+    <img id="steady" src="https://files.catbox.moe/ssntqw.png" alt="Steady" style="display: none;">
+    <img id="go" src="https://files.catbox.moe/c985jt.png" alt="Go" style="display: none;">
+  </div>
+  <script src="game.js"></script>
+
+  <audio id="backgroundMusic" src="https://files.catbox.moe/3w7g7l.mp3" loop></audio>
+
   <div class="player">
-    <img src="https://i.gifer.com/17xo.gif" style="width: 100px; height: 100px;">
+    <img src="https://i.gifer.com/17xo.gif" style="width: 150px; height: 100px;">
   </div>
   
   <div id="score">Score: 0</div>
+
+  <div id="achievement" class="achievement">
+    <img src="https://files.catbox.moe/vni54i.gif" alt="Achievement" style="width: 2000px;">
+  </div>
   
   <script>
     var player = document.querySelector('.player');
     var scoreElement = document.getElementById('score');
     var score = 0;
+    var musicStarted = false;
 
     document.addEventListener('mousemove', function(event) {
+      if (!musicStarted) {
+        var backgroundMusic = document.getElementById('backgroundMusic');
+        backgroundMusic.play();
+        musicStarted = true;
+      }
+
       var mouseX = event.clientX;
       var mouseY = event.clientY;
       
@@ -63,42 +86,60 @@
       player.style.top = mouseY - (player.clientHeight / 2) + 'px';
     });
 
-    setInterval(function() {
-      var treats = document.querySelectorAll('.treat');
+    var consuming = false; // Flag to indicate whether a treat is being consumed
+var treatCounter = 0; // Counter to keep track of the number of treats
 
-      for (var i = 0; i < treats.length; i++) {
-        var treat = treats[i];
-        var treatRect = treat.getBoundingClientRect();
-        var playerRect = player.getBoundingClientRect();
+setInterval(function() {
+  var treats = document.querySelectorAll('.treat');
 
-        if (
-          playerRect.left < treatRect.right &&
-          playerRect.right > treatRect.left &&
-          playerRect.top < treatRect.bottom &&
-          playerRect.bottom > treatRect.top
-        ) {
-          treat.parentNode.removeChild(treat); // Remove the touched treat
-          score += 10;
-          scoreElement.textContent = 'Score: ' + score;
+  for (var i = 0; i < treats.length; i++) {
+    var treat = treats[i];
+    var treatRect = treat.getBoundingClientRect();
+    var playerRect = player.getBoundingClientRect();
 
-          spawnTreat(); // Spawn a new treat
+    if (
+      playerRect.left < treatRect.right &&
+      playerRect.right > treatRect.left &&
+      playerRect.top < treatRect.bottom &&
+      playerRect.bottom > treatRect.top
+    ) {
+      if (!consuming) { // Check if not already consuming a treat
+        consuming = true; // Set consuming flag to true
+        treat.parentNode.removeChild(treat); // Remove the touched treat
+        treatCounter--;
+        score += 5;
+        scoreElement.textContent = 'Score: ' + score;
+
+        if (score >= 100) {
+          var achievement = document.getElementById('achievement');
+          achievement.style.display = 'block';
         }
+
+        setTimeout(function() {
+          consuming = false; // Set consuming flag to false after a delay
+        }, 1000); // Adjust the delay as needed
       }
-    }, 100);
-
-    function spawnTreat() {
-      var treat = document.createElement('div');
-      treat.classList.add('treat');
-      treat.style.top = getRandomPosition(window.innerHeight) + 'px';
-      treat.style.left = getRandomPosition(window.innerWidth) + 'px';
-      document.body.appendChild(treat);
     }
+  }
+}, 1);
 
-    setInterval(spawnTreat, 5000); // Spawn treats every 5 seconds
+function spawnTreat() {
+  if (treatCounter < 20) { // Check if the maximum number of treats has been reached
+    var treat = document.createElement('div');
+    treat.classList.add('treat');
+    treat.style.top = getRandomPosition(window.innerHeight) + 'px';
+    treat.style.left = getRandomPosition(window.innerWidth) + 'px';
+    document.body.appendChild(treat);
+    treatCounter++;
+  }
+}
 
-    function getRandomPosition(max) {
-      return Math.floor(Math.random() * max);
-    }
+setInterval(spawnTreat, 2000); // Spawn a treat every 2 seconds
+
+function getRandomPosition(max) {
+  return Math.floor(Math.random() * max);
+}
+
   </script>
 </body>
 </html>
